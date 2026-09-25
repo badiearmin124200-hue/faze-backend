@@ -36,10 +36,12 @@ def room_webapp_url(
         safe="",
     )
 
+    MUSIC_APP_SHORT_NAME = "music"
+
     return (
-        f"https://t.me/{username}"
-        f"?startapp={start_param}"
-    )
+    f"https://t.me/{username}/{MUSIC_APP_SHORT_NAME}"
+    f"?startapp={start_param}"
+)
 
 
 # =========================================================
