@@ -6,7 +6,7 @@
 /* =========================================================
    TELEGRAM
 ========================================================= */
-
+console.log("VELFA MUSIC APP VERSION: 20260925-2");
 const telegramWebApp =
     window.Telegram?.WebApp || null;
 const BACKEND_URL = "https://lapping-sizzling-humongous.ngrok-free.dev";
@@ -4869,8 +4869,7 @@ async function loadMusicLibrary() {
 
     try {
         const url =
-            `${BACKEND_URL}/api/music/library?t=${Date.now()}`;
-
+`${BACKEND_URL}/api/music/library?client_version=20260925-2`
         const response = await fetch(url, {
             method: "GET",
             cache: "no-store",
