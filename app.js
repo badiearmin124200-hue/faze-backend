@@ -6,7 +6,7 @@
 /* =========================================================
    TELEGRAM
 ========================================================= */
-console.log("VELFA MUSIC APP VERSION: 20260925-2");
+console.log("VELFA MUSIC APP VERSION: 20260925-4");
 const telegramWebApp =
     window.Telegram?.WebApp || null;
 const BACKEND_URL = "https://lapping-sizzling-humongous.ngrok-free.dev";
