@@ -4910,7 +4910,42 @@ async function loadMusicLibrary() {
         "<p>⏳ در حال دریافت آرشیو...</p>";
 
     try {
-        const data = await loadMusicLibraryJsonp();
+        const callbackName =
+            "musicLibraryCallback_" + Date.now();
+
+        const data = await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+
+            const timeout = setTimeout(() => {
+                script.remove();
+                reject(
+                    new Error("سرور آرشیو پاسخ نداد.")
+                );
+            }, 10000);
+
+            window[callbackName] = (result) => {
+                clearTimeout(timeout);
+                delete window[callbackName];
+                script.remove();
+                resolve(result);
+            };
+
+            script.onerror = () => {
+                clearTimeout(timeout);
+                delete window[callbackName];
+                script.remove();
+                reject(
+                    new Error(
+                        "اتصال به آرشیو موسیقی برقرار نشد."
+                    )
+                );
+            };
+
+            script.src =
+                `${BACKEND_URL}/api/music/library/jsonp?callback=${callbackName}&v=20260925`;
+
+            document.head.appendChild(script);
+        });
 
         if (!data || data.status !== "ok") {
             throw new Error(
@@ -4954,7 +4989,6 @@ async function loadMusicLibrary() {
              <small>${error.message || "خطای نامشخص"}</small>`;
     }
 }
-
 /* =========================================================
    FIND LIBRARY TRACK
 ========================================================= */
