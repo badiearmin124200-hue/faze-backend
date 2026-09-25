@@ -4858,7 +4858,6 @@ if (audioPlayer) {
 /* =========================================================
    LOAD MUSIC LIBRARY
 ========================================================= */
-
 async function loadMusicLibrary() {
     if (!libraryTracks) {
         return;
@@ -4868,26 +4867,15 @@ async function loadMusicLibrary() {
         "<p>⏳ در حال دریافت آرشیو...</p>";
 
     try {
-        const url =
-`${BACKEND_URL}/api/music/library?client_version=20260925-2`
-        const response = await fetch(url, {
-            method: "GET",
-            cache: "no-store",
-            mode: "cors",
-            headers: {
-                "Accept": "application/json"
-            }
-        });
+        const data = await loadMusicLibraryJsonp();
 
-        if (!response.ok) {
+        if (!data || data.status !== "ok") {
             throw new Error(
-                `Library request failed: ${response.status}`
+                "سرور آرشیو پاسخ معتبر نداد."
             );
         }
 
-        const data = await response.json();
-
-        const tracks = Array.isArray(data?.tracks)
+        const tracks = Array.isArray(data.tracks)
             ? data.tracks
             : [];
 
@@ -4923,6 +4911,7 @@ async function loadMusicLibrary() {
              <small>${error.message || "خطای نامشخص"}</small>`;
     }
 }
+
 /* =========================================================
    FIND LIBRARY TRACK
 ========================================================= */
@@ -4931,7 +4920,7 @@ function findLibraryTrackIndex(
     trackId,
     url
 ) {
-
+ر
     if (
         !Array.isArray(
             musicLibrary
