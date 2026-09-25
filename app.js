@@ -4858,6 +4858,49 @@ if (audioPlayer) {
 /* =========================================================
    LOAD MUSIC LIBRARY
 ========================================================= */
+
+function loadMusicLibraryJsonp() {
+    return new Promise((resolve, reject) => {
+        const callbackName =
+            "musicLibraryCallback_" + Date.now();
+
+        const script = document.createElement("script");
+
+        const timeout = setTimeout(() => {
+            cleanup();
+            reject(
+                new Error("سرور آرشیو پاسخ نداد.")
+            );
+        }, 10000);
+
+        function cleanup() {
+            clearTimeout(timeout);
+            delete window[callbackName];
+            script.remove();
+        }
+
+        window[callbackName] = (data) => {
+            cleanup();
+            resolve(data);
+        };
+
+        script.onerror = () => {
+            cleanup();
+            reject(
+                new Error(
+                    "اتصال به آرشیو موسیقی برقرار نشد."
+                )
+            );
+        };
+
+        script.src =
+            `${BACKEND_URL}/api/music/library/jsonp?callback=${callbackName}&v=20260925`;
+
+        document.head.appendChild(script);
+    });
+}
+
+
 async function loadMusicLibrary() {
     if (!libraryTracks) {
         return;
