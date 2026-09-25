@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FAZE Music</title>
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <main class="music-room">
+
+        <!-- Header -->
+        <header class="room-header">
+
+            <div class="brand">
+                <span class="brand-icon">✦</span>
+
+                <div>
+                    <h1>FAZE MUSIC</h1>
+
+                    <p id="roomStatus">
+                        در حال اتصال...
+                    </p>
+                </div>
+            </div>
+
+            <div class="connection-status">
+
+                <span
+                    id="connectionDot"
+                    class="status-dot"
+                ></span>
+
+                <span id="connectionText">
+                    اتصال
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- Group Music Header -->
+        <!-- فقط برای Group Music نمایش داده می‌شود -->
+        <section
+            id="groupMusicHeader"
+            class="music-card"
+            hidden
+        >
+
+            <div class="track-info">
+
+                <span class="track-label">
+                    👥 FAZE GROUP MUSIC
+                </span>
+
+                <h2 id="groupMusicTitle">
+                    روم مخصوص گروه
+                </h2>
+
+                <p id="groupMusicDescription">
+                    اینجا می‌توانید با اعضای گروه همزمان موزیک گوش کنید،
+                    آهنگ عوض کنید و پخش موسیقی را با هم هماهنگ نگه دارید.
+                </p>
+
+            </div>
+
+            <div class="users-title">
+
+                <h3>
+                    🎵 Music Room
+                </h3>
+
+                <span id="groupMusicCapacity">
+                    0 / 20 نفر
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- Main Music Area -->
+        <section class="music-card">
+
+            <div class="album">
+
+                <div
+                    id="albumCover"
+                    class="album-cover"
+                >
+                    🎵
+                </div>
+
+            </div>
+
+
+            <div class="track-info">
+
+                <span class="track-label">
+                    در حال پخش
+                </span>
+
+                <h2 id="trackTitle">
+                    هنوز آهنگی انتخاب نشده
+                </h2>
+
+                <p id="trackArtist">
+                    FAZE Music Room
+                </p>
+
+            </div>
+
+
+            <audio
+                id="audioPlayer"
+                preload="metadata"
+            ></audio>
+
+
+            <!-- Progress -->
+            <div class="progress-section">
+
+                <span id="currentTime">
+                    0:00
+                </span>
+
+                <input
+                    id="progressBar"
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="0"
+                >
+
+                <span id="duration">
+                    0:00
+                </span>
+
+            </div>
+
+
+            <!-- Controls -->
+            <div class="controls">
+
+                <button
+                    id="previousButton"
+                    class="control-button"
+                    type="button"
+                    aria-label="آهنگ قبلی"
+                >
+                    ⏮
+                </button>
+
+
+                <button
+                    id="playButton"
+                    class="play-button"
+                    type="button"
+                    aria-label="پخش"
+                >
+                    ▶
+                </button>
+
+
+                <button
+                    id="nextButton"
+                    class="control-button"
+                    type="button"
+                    aria-label="آهنگ بعدی"
+                >
+                    ⏭
+                </button>
+
+            </div>
+
+
+            <!-- Volume -->
+            <div class="volume-section">
+
+                <span>
+                    🔊
+                </span>
+
+                <input
+                    id="volumeBar"
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="80"
+                >
+
+            </div>
+
+        </section>
+
+
+        <!-- Shared Volume -->
+        <div class="shared-volume-option">
+
+            <label class="switch-label">
+
+                <input
+                    id="sharedVolumeToggle"
+                    type="checkbox"
+                >
+
+                <span>
+                    🔗 ولوم مشترک
+                </span>
+
+            </label>
+
+        </div>
+
+
+        <!-- Music Library -->
+        <div class="music-library">
+
+            <h2>
+                🎵 آرشیو موسیقی
+            </h2>
+
+            <input
+                id="librarySearch"
+                type="text"
+                placeholder="🔎 جستجوی آهنگ یا خواننده..."
+            >
+
+            <div id="libraryTracks">
+                <p>
+                    ⏳ در حال دریافت آرشیو...
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- Music Upload -->
+        <div class="upload-section">
+
+            <input
+                id="musicFileInput"
+                type="file"
+                accept="audio/*"
+                hidden
+            >
+
+            <button
+                id="selectMusicButton"
+                class="action-button"
+                type="button"
+            >
+                🎵 انتخاب آهنگ
+            </button>
+
+            <p id="uploadStatus"></p>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- NORMAL FRIEND ROOM USERS -->
+        <!-- ================================================= -->
+
+        <!--
+            این بخش برای «با دوست» است.
+            دست نمی‌زنیم و در روم گروهی مخفی خواهد شد.
+        -->
+
+        <section
+            id="friendUsersCard"
+            class="users-card"
+        >
+
+            <div class="users-title">
+
+                <h3>
+                    👥 داخل اتاق
+                </h3>
+
+                <span id="userCount">
+                    0 / 2
+                </span>
+
+            </div>
+
+
+            <div class="users-list">
+
+                <!-- Creator -->
+                <div
+                    id="creatorUser"
+                    class="user"
+                >
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong id="creatorName">
+                            کاربر اول
+                        </strong>
+
+                        <span>
+                            سازنده اتاق
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="creatorStatus"
+                        class="ready-status"
+                    >
+                        ● آنلاین
+                    </div>
+
+                </div>
+
+
+                <!-- Guest -->
+                <div
+                    id="guestUser"
+                    class="user"
+                >
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong id="guestName">
+                            در انتظار نفر دوم...
+                        </strong>
+
+                        <span>
+                            مهمان
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="guestStatus"
+                        class="ready-status waiting"
+                    >
+                        ● انتظار
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- GROUP MUSIC USERS -->
+        <!-- ================================================= -->
+
+        <!--
+            فقط برای Group Music نمایش داده می‌شود.
+            برای «با دوست» کاملاً مخفی است.
+        -->
+
+        <section
+            id="groupMusicUsersCard"
+            class="users-card"
+            hidden
+        >
+
+            <div class="users-title">
+
+                <h3>
+                    👥 اعضای داخل روم
+                </h3>
+
+                <span id="groupUserCount">
+                    0 / 20
+                </span>
+
+            </div>
+
+
+            <div
+                id="groupMusicUsersList"
+                class="users-list"
+            >
+
+                <div class="user">
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong>
+                            در انتظار اعضا...
+                        </strong>
+
+                        <span>
+                            هنوز کسی وارد روم نشده
+                        </span>
+
+                    </div>
+
+                    <div class="ready-status waiting">
+                        ● انتظار
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Bottom Actions -->
+        <section class="room-actions">
+
+            <button
+                id="syncButton"
+                class="action-button"
+                type="button"
+            >
+                🔄 همگام‌سازی
+            </button>
+
+            <button
+                id="leaveButton"
+                class="leave-button"
+                type="button"
+            >
+                🚪 خروج از اتاق
+            </button>
+
+        </section>
+
+
+        <!-- Toast -->
+        <div
+            id="toast"
+            class="toast"
+            aria-live="polite"
+        ></div>
+
+    </main>
+
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<script src="./app.js?v=20260925-2"></script></body>
+
+</html>
