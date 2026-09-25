@@ -3,6 +3,8 @@ import aiosqlite
 import os
 import uuid
 from fastapi import Form
+from fastapi import Response
+
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -382,16 +384,18 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://badiearmin124200-hue.github.io"
+        "https://badiearmin124200-hue.github.io",
     ],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
-
 # =========================================================
 # ENSURE MUSIC DIRECTORIES
 # =========================================================
@@ -860,21 +864,17 @@ async def upload_music(
 # MUSIC LIBRARY
 # =========================================================
 
-@app.get(
-    "/api/music/library"
-)
-async def get_music_library():
+
+@app.get("/api/music/library")
+async def get_music_library(response: Response):
+    response.headers["Access-Control-Allow-Origin"] = (
+        "https://badiearmin124200-hue.github.io"
+    )
+    response.headers["Access-Control-Expose-Headers"] = "*"
 
     try:
-
-        async with aiosqlite.connect(
-            DB_FILE
-        ) as db:
-
-            db.row_factory = (
-                aiosqlite.Row
-            )
-
+        async with aiosqlite.connect(DB_FILE) as db:
+            db.row_factory = aiosqlite.Row
 
             cursor = await db.execute(
                 """
@@ -889,44 +889,92 @@ async def get_music_library():
                 """
             )
 
-
             rows = await cursor.fetchall()
 
-
-        tracks = [
-            dict(row)
-            for row in rows
-        ]
-
+        tracks = [dict(row) for row in rows]
 
         logger.info(
-            "Music library loaded | "
-            "tracks=%s | db=%s",
+            "Music library loaded | tracks=%s | db=%s",
             len(tracks),
             DB_FILE,
         )
 
-
         return {
             "status": "ok",
-
             "tracks": tracks,
         }
 
-
     except Exception as e:
-
         logger.exception(
             "Music library failed: %s",
             e,
         )
 
-
         raise HTTPException(
             status_code=500,
-            detail="دریافت کتابخانه آهنگ انجام نشد."
+            detail="دریافت کتابخانه آهنگ انجام نشد.",
         )
 
+from fastapi.responses import Response
+import re
+import json
+
+
+@app.get("/api/music/library/jsonp")
+async def get_music_library_jsonp(callback: str = "musicLibraryCallback"):
+
+    if not re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", callback):
+        raise HTTPException(status_code=400, detail="Invalid callback")
+
+    try:
+        async with aiosqlite.connect(DB_FILE) as db:
+            db.row_factory = aiosqlite.Row
+
+            cursor = await db.execute(
+                """
+                SELECT
+                    id,
+                    title,
+                    artist,
+                    file_url,
+                    duration
+                FROM music_library
+                ORDER BY id DESC
+                """
+            )
+
+            rows = await cursor.fetchall()
+
+        tracks = [dict(row) for row in rows]
+
+        payload = {
+            "status": "ok",
+            "tracks": tracks,
+        }
+
+        javascript = (
+            f"{callback}({json.dumps(payload, ensure_ascii=False)});"
+        )
+
+        return Response(
+            content=javascript,
+            media_type="application/javascript",
+        )
+
+    except Exception as e:
+        logger.exception("Music library JSONP failed: %s", e)
+
+        javascript = (
+            f"{callback}("
+            '{"status":"error","tracks":[]}'
+            ");"
+        )
+
+        return Response(
+            content=javascript,
+            media_type="application/javascript",
+            status_code=500,
+        )
 
 # =========================================================
 # ADMIN ADD MUSIC
