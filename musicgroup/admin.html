@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FAZE Music Admin</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #status {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎵 FAZE Music Admin</h1>
+
+    <form id="adminMusicForm">
+
+        <label>
+            فایل آهنگ
+        </label>
+
+        <input
+            id="musicFile"
+            type="file"
+            accept=".mp3,.m4a,.wav,.ogg"
+            required
+        >
+
+        <label>
+            نام آهنگ
+        </label>
+
+        <input
+            id="musicTitle"
+            type="text"
+            placeholder="مثلاً جونون"
+            required
+        >
+
+        <label>
+            خواننده
+        </label>
+
+        <input
+            id="musicArtist"
+            type="text"
+            placeholder="مثلاً سامان جلیلی"
+            required
+        >
+
+        <button type="submit">
+            ➕ افزودن به آرشیو
+        </button>
+
+    </form>
+
+    <p id="status"></p>
+<script>
+const form = document.getElementById("adminMusicForm");
+const status = document.getElementById("status");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const file = document.getElementById("musicFile").files[0];
+    const title = document.getElementById("musicTitle").value.trim();
+    const artist = document.getElementById("musicArtist").value.trim();
+
+    if (!file || !title || !artist) {
+        status.textContent = "⚠️ همه فیلدها را کامل کن.";
+        return;
+    }
+
+    status.textContent = "⏳ در حال آپلود آهنگ...";
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("title", title);
+    formData.append("artist", artist);
+
+    try {
+        const response = await fetch("/api/music/admin/add", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "خطا در آپلود");
+        }
+
+        status.textContent =
+            "✅ آهنگ با موفقیت به آرشیو اضافه شد.";
+
+        form.reset();
+
+    } catch (error) {
+        console.error(error);
+
+        status.textContent =
+            "❌ افزودن آهنگ ناموفق بود.";
+    }
+});
+</script>
+</body>
+</html>
