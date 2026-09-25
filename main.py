@@ -3,6 +3,9 @@ import aiosqlite
 import os
 import uuid
 from fastapi import Form
+
+from fastapi.middleware.cors import CORSMiddleware
+
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -379,6 +382,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://badiearmin124200-hue.github.io"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # =========================================================
 # ENSURE MUSIC DIRECTORIES
