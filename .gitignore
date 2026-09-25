@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+uploads/
+*.db
+*.sqlite
+*.sqlite3
+cloudflared.exe
